@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulación GPS con Mapa</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    #map {
+      height: 400px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simulación de Coordenadas GPS</h1>
+  <p id="coordenadas">Coordenadas: </p>
+  <button id="enviar-coordenadas">Enviar Coordenadas</button>
+
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    // Inicializar mapa centrado en una posición genérica
+    const map = L.map('map').setView([0, 0], 2);
+
+    // Agregar capa de mapa base (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Crear un marcador inicial
+    let marcador = L.marker([0, 0]).addTo(map);
+
+    // Función para actualizar el marcador y texto con coordenadas
+    document.getElementById('enviar-coordenadas').onclick = async () => {
+      try {
+        const response = await fetch('/api/coordenadas');
+        const coords = await response.json();
+
+        const lat = parseFloat(coords.lat);
+        const lng = parseFloat(coords.lng);
+
+        // Actualizar texto
+        document.getElementById('coordenadas').textContent =
+          `Coordenadas: lat: ${lat}, lng: ${lng}`;
+
+        // Mover marcador y centrar mapa
+        marcador.setLatLng([lat, lng]);
+        map.setView([lat, lng], 8);
+      } catch (error) {
+        console.error('Error al obtener coordenadas:', error);
+        document.getElementById('coordenadas').textContent = 'Error al obtener coordenadas.';
+      }
+    };
+  </script>
+</body>
+</html>
+

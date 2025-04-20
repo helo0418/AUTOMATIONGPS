@@ -1,0 +1,93 @@
+{
+	"info": {
+		"_postman_id": "4365df1f-1778-4c1e-9e5d-bb9ad1a91026",
+		"name": "Simular coordenadas GPS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38498164"
+	},
+	"item": [
+		{
+			"name": "Prueba Coordenadas",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let lat = 40.4168 + Math.random() * 0.01;\r",
+							"let lng = -3.7038 + Math.random() * 0.01;\r",
+							"\r",
+							"pm.environment.set(\"lat\", lat.toFixed(6));\r",
+							"pm.environment.set(\"lng\", lng.toFixed(6));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let body = pm.response.json();\r",
+							"let datos = body.json; // Esta es la parte que contiene vehicleId, lat, lng\r",
+							"\r",
+							"pm.test(\"Código 200 OK\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"El cuerpo incluye vehicleId\", function () {\r",
+							"    pm.expect(datos).to.have.property(\"vehicleId\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"La latitud es un número\", function () {\r",
+							"    pm.expect(datos.lat).to.be.a(\"number\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"⏱️ Tiempo de respuesta menor a 1000ms\", function () {\r",
+							"    const tiempo = pm.response.responseTime;\r",
+							"    console.log(`⏱️ Tiempo de respuesta: ${tiempo}ms`);\r",
+							"    pm.expect(tiempo, \"La respuesta demoró demasiado\").to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Latitud está en el rango válido\", function () {\r",
+							"    pm.expect(datos.lat).to.be.within(-90, 90);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Longitud está en el rango válido\", function () {\r",
+							"    pm.expect(datos.lng).to.be.within(-180, 180);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"vehicleId\": \"ABC123\",\r\n  \"lat\": 4.6097, \r\n  \"lng\": -74.0817  \r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulación GPS</title>
+</head>
+<body>
+  <h1>Mapa de seguimiento</h1>
+  <p id="coordenadas">Esperando coordenadas...</p>
+  <button onclick="simularGPS()">Enviar coordenadas</button>
+
+  <script>
+    async function simularGPS() {
+      try {
+        // Aquí estamos simulando una llamada a una API externa
+        const res = await fetch("/api/coordenadas");
+
+        if (!res.ok) {
+          throw new Error('Error al obtener las coordenadas');
+        }
+
+        // Coordenadas fijas que se retornarán en la simulación
+        const data = await res.json();
+        const lat = data.lat;
+        const lng = data.lng;
+        document.getElementById('coordenadas').textContent = `Coordenadas: lat: ${lat}, lng: ${lng}`;
+        console.log("Coordenadas simuladas:", data);
+      } catch (error) {
+        console.error("ERROR:", error);
+        document.getElementById('coordenadas').textContent = "Error de coordenadas";
+      }
+    }
+  </script>
+</body>
+</html>
